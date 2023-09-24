@@ -10,8 +10,9 @@ function Book(title, author, pages, read) {
 function addBookToLibrary(title, author, pages, read) {
     const book = new Book(title, author, pages, read);
     myLibrary.push(book);
-    console.log(myLibrary);
     displayBook(myLibrary);
+    removeBook(myLibrary);
+    console.log(myLibrary);
 }
 
 function displayBook(myLibrary) {
@@ -24,7 +25,6 @@ function displayBook(myLibrary) {
 
         const bookInfo = document.createElement('div');
         bookInfo.classList.add('book-info');
-
         const bookTitle = document.createElement('div');
         bookTitle.classList.add('book-title');
         bookTitle.textContent = book.title;
@@ -49,8 +49,11 @@ function displayBook(myLibrary) {
             statusButton.setAttribute('class', 'status-button btn btn-outline-warning');
             statusButton.textContent = 'Ongoing';
         }
+
         const removeButton = document.createElement('button');
-        removeButton.classList.add('btn-close');
+        removeButton.setAttribute('class', 'remove-button btn-close');
+        removeButton.setAttribute('data-index', myLibrary.indexOf(book));
+
         buttonContainer.appendChild(statusButton);
         buttonContainer.appendChild(removeButton);
 
@@ -63,13 +66,29 @@ function displayBook(myLibrary) {
 }
 
 
+function removeBook(myLibrary) {
+    const removeButton = document.querySelectorAll('.remove-button');
+    removeButton.forEach((button) => {
+        button.addEventListener('click', () => {
+            const index = button.getAttribute('data-index');
+            myLibrary.splice(+index, 1);
+            displayBook(myLibrary);
+        });
+    });
+}
+
+
+
+
+
+
 const bookModal = new bootstrap.Modal('#book-modal');
 const bookForm = document.querySelector('#book-form');
 bookForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const title = document.querySelector('#title').value;
-  const author = document.querySelector('#author').value;
-  const pages = document.querySelector('#pages').value;
+    event.preventDefault();
+    const title = document.querySelector('#title').value;
+    const author = document.querySelector('#author').value;
+    const pages = document.querySelector('#pages').value;
   const read = document.querySelector('#read').checked;
   addBookToLibrary(title, author, pages, read);
   bookForm.reset();
@@ -77,7 +96,4 @@ bookForm.addEventListener('submit', (event) => {
 });
 
 
-const statusButton = document.querySelector('.status-button');
-statusButton.addEventListener('click', () => {
 
-});
