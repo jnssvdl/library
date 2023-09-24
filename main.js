@@ -7,12 +7,29 @@ function Book(title, author, pages, read) {
     this.read = read;
 }
 
+Book.prototype.changeStatus = function() {
+    this.read = !this.read;
+}
+
+
+
 function addBookToLibrary(title, author, pages, read) {
     const book = new Book(title, author, pages, read);
     myLibrary.push(book);
     displayBook(myLibrary);
     removeBook(myLibrary);
+    statusChange(myLibrary);
     console.log(myLibrary);
+}
+
+function buttonStatus(book, statusButton) {
+    if (book.read) {
+        statusButton.setAttribute('class', 'status-button btn btn-outline-success');
+        statusButton.textContent = 'Read';
+    } else {
+        statusButton.setAttribute('class', 'status-button btn btn-outline-warning');
+        statusButton.textContent = 'Ongoing';
+    }
 }
 
 function displayBook(myLibrary) {
@@ -42,13 +59,8 @@ function displayBook(myLibrary) {
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('button-container');
         const statusButton = document.createElement('button');
-        if (book.read) {
-            statusButton.setAttribute('class', 'status-button btn btn-outline-success');
-            statusButton.textContent = 'Read';
-        } else {
-            statusButton.setAttribute('class', 'status-button btn btn-outline-warning');
-            statusButton.textContent = 'Ongoing';
-        }
+
+        buttonStatus(book, statusButton);
 
         const removeButton = document.createElement('button');
         removeButton.setAttribute('class', 'remove-button btn-close');
@@ -77,10 +89,18 @@ function removeBook(myLibrary) {
     });
 }
 
-
-
-
-
+function statusChange(myLibrary) {
+    const statusButton = document.querySelectorAll('.status-button');
+    myLibrary.forEach((book) => {
+        statusButton.forEach((button) => {
+            button.addEventListener('click', () => {
+                console.log('here');
+                book.changeStatus();
+                buttonStatus(book, button);
+            });
+        });
+    });
+}
 
 const bookModal = new bootstrap.Modal('#book-modal');
 const bookForm = document.querySelector('#book-form');
@@ -95,5 +115,4 @@ bookForm.addEventListener('submit', (event) => {
   bookModal.hide();
 });
 
-
-
+addBookToLibrary("Harry Potter and the Sorcerer's Stone", "J. K Rowling", "223", false);
