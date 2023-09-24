@@ -43,6 +43,7 @@ body {
     background-color: #fafafa;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 1rem;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;

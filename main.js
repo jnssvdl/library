@@ -8,13 +8,58 @@ function Book(title, author, pages, read) {
 }
 
 function addBookToLibrary(title, author, pages, read) {
-  const book = new Book(title, author, pages, read);
-  myLibrary.push(book);
-  console.log(myLibrary);
+    const book = new Book(title, author, pages, read);
+    myLibrary.push(book);
+    console.log(myLibrary);
+    displayBook(myLibrary);
 }
 
 function displayBook(myLibrary) {
-  
+    const bookContainer = document.querySelector('#book-container');
+    bookContainer.innerHTML = '';
+    myLibrary.forEach((book) => {
+        const bookCard = document.createElement('div');
+        bookCard.classList.add('book-card');
+
+
+        const bookInfo = document.createElement('div');
+        bookInfo.classList.add('book-info');
+
+        const bookTitle = document.createElement('div');
+        bookTitle.classList.add('book-title');
+        bookTitle.textContent = book.title;
+        const bookAuthor = document.createElement('div');
+        bookAuthor.classList.add('book-author');
+        bookAuthor.textContent = `by ${book.author}`;
+        const bookPages = document.createElement('div');
+        bookPages.classList.add('book-pages');
+        bookPages.textContent = `Pages: ${book.pages}`;
+        bookInfo.appendChild(bookTitle);
+        bookInfo.appendChild(bookAuthor);
+        bookInfo.appendChild(bookPages);
+
+        
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('button-container');
+        const statusButton = document.createElement('button');
+        if (book.read) {
+            statusButton.setAttribute('class', 'status-button btn btn-outline-success');
+            statusButton.textContent = 'Read';
+        } else {
+            statusButton.setAttribute('class', 'status-button btn btn-outline-warning');
+            statusButton.textContent = 'Ongoing';
+        }
+        const removeButton = document.createElement('button');
+        removeButton.classList.add('btn-close');
+        buttonContainer.appendChild(statusButton);
+        buttonContainer.appendChild(removeButton);
+
+
+        bookCard.appendChild(bookInfo);
+        bookCard.appendChild(buttonContainer);
+
+        bookContainer.appendChild(bookCard);
+    });
 }
 
 
@@ -29,4 +74,10 @@ bookForm.addEventListener('submit', (event) => {
   addBookToLibrary(title, author, pages, read);
   bookForm.reset();
   bookModal.hide();
+});
+
+
+const statusButton = document.querySelector('.status-button');
+statusButton.addEventListener('click', () => {
+
 });
