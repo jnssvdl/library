@@ -1,106 +1,79 @@
 const myLibrary = [];
 
-function Book(title, author, pages, read) {
+function Book(title, author, pages, status) {
     this.title = title;
     this.author = author;
     this.pages = pages;
-    this.read = read;
+    this.status = status;
 }
 
-Book.prototype.changeStatus = function() {
-    this.read = !this.read;
-}
-
-
-
-function addBookToLibrary(title, author, pages, read) {
-    const book = new Book(title, author, pages, read);
+function addBookToLibrary(myLibrary, book) {
     myLibrary.push(book);
-    displayBook(myLibrary);
-    removeBook(myLibrary);
-    statusChange(myLibrary);
-    console.log(myLibrary);
+    // console.log(myLibrary);
 }
 
-function buttonStatus(book, statusButton) {
-    if (book.read) {
+function displayStatusButton(book, statusButton) {
+    if (book.status) {
         statusButton.setAttribute('class', 'status-button btn btn-outline-success');
-        statusButton.textContent = 'Read';
+        statusButton.textContent = 'Finished';
     } else {
         statusButton.setAttribute('class', 'status-button btn btn-outline-warning');
         statusButton.textContent = 'Ongoing';
     }
 }
 
-function displayBook(myLibrary) {
-    const bookContainer = document.querySelector('#book-container');
+function renderLibrary(myLibrary) {
+    const bookContainer = document.querySelector('.book-container');
     bookContainer.innerHTML = '';
-    myLibrary.forEach((book) => {
+
+    myLibrary.forEach((book, index) => {
         const bookCard = document.createElement('div');
         bookCard.classList.add('book-card');
 
 
-        const bookInfo = document.createElement('div');
-        bookInfo.classList.add('book-info');
+        const bookInformation = document.createElement('div');
+        bookInformation.classList.add('book-information');
+
         const bookTitle = document.createElement('div');
         bookTitle.classList.add('book-title');
         bookTitle.textContent = book.title;
+        bookInformation.appendChild(bookTitle);
         const bookAuthor = document.createElement('div');
         bookAuthor.classList.add('book-author');
         bookAuthor.textContent = `by ${book.author}`;
+        bookInformation.appendChild(bookAuthor);
         const bookPages = document.createElement('div');
         bookPages.classList.add('book-pages');
         bookPages.textContent = `Pages: ${book.pages}`;
-        bookInfo.appendChild(bookTitle);
-        bookInfo.appendChild(bookAuthor);
-        bookInfo.appendChild(bookPages);
+        bookInformation.appendChild(bookPages);
 
-        
-        const buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('button-container');
+        bookCard.appendChild(bookInformation);
+
+
+        const bookStatus = document.createElement('div');
+        bookStatus.classList.add('book-status');
+
         const statusButton = document.createElement('button');
-
-        buttonStatus(book, statusButton);
-
+        displayStatusButton(book, statusButton);
+        bookStatus.appendChild(statusButton);
         const removeButton = document.createElement('button');
         removeButton.setAttribute('class', 'remove-button btn-close');
-        removeButton.setAttribute('data-index', myLibrary.indexOf(book));
+        removeButton.setAttribute('data-index', index);
+        removeButton.addEventListener('click', () => {
+            const index = removeButton.getAttribute('data-index');
+            myLibrary.splice(+index, 1);
+            renderLibrary(myLibrary);
+        });
+        bookStatus.appendChild(removeButton);
 
-        buttonContainer.appendChild(statusButton);
-        buttonContainer.appendChild(removeButton);
+        bookCard.appendChild(bookStatus);
 
-
-        bookCard.appendChild(bookInfo);
-        bookCard.appendChild(buttonContainer);
 
         bookContainer.appendChild(bookCard);
+
     });
 }
 
-
-function removeBook(myLibrary) {
-    const removeButton = document.querySelectorAll('.remove-button');
-    removeButton.forEach((button) => {
-        button.addEventListener('click', () => {
-            const index = button.getAttribute('data-index');
-            myLibrary.splice(+index, 1);
-            displayBook(myLibrary);
-        });
-    });
-}
-
-function statusChange(myLibrary) {
-    const statusButton = document.querySelectorAll('.status-button');
-    myLibrary.forEach((book) => {
-        statusButton.forEach((button) => {
-            button.addEventListener('click', () => {
-                console.log('here');
-                book.changeStatus();
-                buttonStatus(book, button);
-            });
-        });
-    });
-}
 
 const bookModal = new bootstrap.Modal('#book-modal');
 const bookForm = document.querySelector('#book-form');
@@ -109,10 +82,12 @@ bookForm.addEventListener('submit', (event) => {
     const title = document.querySelector('#title').value;
     const author = document.querySelector('#author').value;
     const pages = document.querySelector('#pages').value;
-  const read = document.querySelector('#read').checked;
-  addBookToLibrary(title, author, pages, read);
-  bookForm.reset();
-  bookModal.hide();
-});
+    const status = document.querySelector('#status').checked;
 
-addBookToLibrary("Harry Potter and the Sorcerer's Stone", "J. K Rowling", "223", false);
+    const book = new Book(title, author, pages, status);
+    addBookToLibrary(myLibrary, book);
+    renderLibrary(myLibrary);
+
+    bookForm.reset();
+    bookModal.hide();
+});
