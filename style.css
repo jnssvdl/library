@@ -14,7 +14,7 @@ body {
 }
 
 .book-container {
-    border: 1px solid cadetblue;
+    /* border: 1px solid cadetblue; */
     padding: 2rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -44,4 +44,19 @@ body {
     padding: 1rem;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+}
+
+.book-title {
+    font-size: 1.25rem;
+    color: #020617;
+}
+
+.book-author {
+    font-size: 0.875rem;
+    color: #1f2937;
+}
+
+.book-pages {
+    font-size: 0.75rem;
+    color: #4b5563;
 }

@@ -7,12 +7,16 @@ function Book(title, author, pages, status) {
     this.status = status;
 }
 
+Book.prototype.changeStatus = function () {
+    this.status = !this.status;
+}
+
 function addBookToLibrary(myLibrary, book) {
     myLibrary.push(book);
     // console.log(myLibrary);
 }
 
-function displayStatusButton(book, statusButton) {
+function displayStatus(book, statusButton) {
     if (book.status) {
         statusButton.setAttribute('class', 'status-button btn btn-outline-success');
         statusButton.textContent = 'Finished';
@@ -54,7 +58,7 @@ function renderLibrary(myLibrary) {
         bookStatus.classList.add('book-status');
 
         const statusButton = document.createElement('button');
-        displayStatusButton(book, statusButton);
+        displayStatus(book, statusButton);
         bookStatus.appendChild(statusButton);
         const removeButton = document.createElement('button');
         removeButton.setAttribute('class', 'remove-button btn-close');
@@ -70,10 +74,19 @@ function renderLibrary(myLibrary) {
 
 
         bookContainer.appendChild(bookCard);
-
     });
 }
 
+function toggleStatus(myLibrary) {
+    const statusButton = document.querySelectorAll('.status-button');
+    statusButton.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            const book = myLibrary[index];
+            book.changeStatus();
+            displayStatus(book, button);
+        });
+    });
+}
 
 const bookModal = new bootstrap.Modal('#book-modal');
 const bookForm = document.querySelector('#book-form');
@@ -87,7 +100,18 @@ bookForm.addEventListener('submit', (event) => {
     const book = new Book(title, author, pages, status);
     addBookToLibrary(myLibrary, book);
     renderLibrary(myLibrary);
+    toggleStatus(myLibrary);
 
     bookForm.reset();
     bookModal.hide();
 });
+
+let book = new Book('Hollow City', 'Ransom Riggs', '416', true);
+addBookToLibrary(myLibrary, book);
+renderLibrary(myLibrary);
+toggleStatus(myLibrary);
+
+book = new Book('The Daily Stoic', 'Ryan Holiday', '416', false);
+addBookToLibrary(myLibrary, book);
+renderLibrary(myLibrary);
+toggleStatus(myLibrary);
