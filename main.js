@@ -67,6 +67,7 @@ function renderLibrary(myLibrary) {
             const index = removeButton.getAttribute('data-index');
             myLibrary.splice(+index, 1);
             renderLibrary(myLibrary);
+            toggleStatus(myLibrary);
         });
         bookStatus.appendChild(removeButton);
 
@@ -96,7 +97,6 @@ bookForm.addEventListener('submit', (event) => {
     const author = document.querySelector('#author').value;
     const pages = document.querySelector('#pages').value;
     const status = document.querySelector('#status').checked;
-
     const book = new Book(title, author, pages, status);
     addBookToLibrary(myLibrary, book);
     renderLibrary(myLibrary);
